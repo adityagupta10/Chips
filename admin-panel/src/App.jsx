@@ -6,7 +6,7 @@ export default function App() {
   const [email, setEmail] = useState('admin@resugrow.com')
   const [password, setPassword] = useState('Prakash123@gutpa')
   const [tasks, setTasks] = useState([])
-  const [newTask, setNewTask] = useState({ title: '', reward: '', description: '' })
+  const [newTask, setNewTask] = useState({ title: '', chip_reward: '', description: '', category: 'video_ad' })
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -44,10 +44,13 @@ export default function App() {
   async function addTask(e) {
     e.preventDefault()
     setLoading(true)
-    const { error } = await supabase.from('tasks').insert([newTask])
+    const { error } = await supabase.from('tasks').insert([{
+      ...newTask,
+      chip_reward: parseInt(newTask.chip_reward)
+    }])
     if (error) alert(error.message)
     else {
-      setNewTask({ title: '', reward: '', description: '' })
+      setNewTask({ title: '', chip_reward: '', description: '', category: 'video_ad' })
       fetchTasks()
     }
     setLoading(false)
@@ -101,10 +104,23 @@ export default function App() {
             />
             <input 
               style={styles.input}
-              placeholder="Reward (e.g. 100 Chips)" 
-              value={newTask.reward} 
-              onChange={e => setNewTask({...newTask, reward: e.target.value})} 
+              placeholder="Chip Reward (Numeric)" 
+              type="number"
+              value={newTask.chip_reward} 
+              onChange={e => setNewTask({...newTask, chip_reward: e.target.value})} 
             />
+            <select
+              style={styles.input}
+              value={newTask.category}
+              onChange={e => setNewTask({...newTask, category: e.target.value})}
+            >
+              <option value="video_ad">Video Ad</option>
+              <option value="survey">Survey</option>
+              <option value="app_install">App Install</option>
+              <option value="mini_game">Mini Game</option>
+              <option value="daily_checkin">Daily Check-in</option>
+              <option value="referral">Referral</option>
+            </select>
             <textarea 
               style={{...styles.input, height: '100px'}}
               placeholder="Description" 
@@ -122,8 +138,12 @@ export default function App() {
           <div style={styles.taskList}>
             {tasks.map(task => (
               <div key={task.id} style={styles.taskItem}>
-                <strong>{task.title}</strong> - <span style={{color: '#ffd700'}}>{task.reward}</span>
-                <p style={{fontSize: '0.9em', color: '#a1a1aa'}}>{task.description}</p>
+                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                  <strong>{task.title}</strong>
+                  <span style={{color: '#ffd700'}}>{task.chip_reward} Chips</span>
+                </div>
+                <div style={{fontSize: '0.8em', color: '#8a2be2', marginTop: '4px'}}>{task.category}</div>
+                <p style={{fontSize: '0.9em', color: '#a1a1aa', marginTop: '8px'}}>{task.description}</p>
               </div>
             ))}
           </div>
