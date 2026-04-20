@@ -3,8 +3,8 @@ import { supabase } from './supabase'
 
 export default function App() {
   const [session, setSession] = useState(null)
-  const [email, setEmail] = useState('earnchipsonline@gmail.com')
-  const [password, setPassword] = useState('generic')
+  const [email, setEmail] = useState('admin@resugrow.com')
+  const [password, setPassword] = useState('Prakash123@gutpa')
   const [tasks, setTasks] = useState([])
   const [newTask, setNewTask] = useState({ title: '', reward: '', description: '' })
   const [loading, setLoading] = useState(false)
