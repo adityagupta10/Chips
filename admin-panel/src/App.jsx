@@ -121,6 +121,12 @@ export default function App() {
               <option value="daily_checkin">Daily Check-in</option>
               <option value="referral">Referral</option>
             </select>
+            <input 
+              style={styles.input}
+              placeholder="Action URL (e.g. Survey link)" 
+              value={newTask.action_url} 
+              onChange={e => setNewTask({...newTask, action_url: e.target.value})} 
+            />
             <textarea 
               style={{...styles.input, height: '100px'}}
               placeholder="Description" 
@@ -143,6 +149,7 @@ export default function App() {
                   <span style={{color: '#ffd700'}}>{task.chip_reward} Chips</span>
                 </div>
                 <div style={{fontSize: '0.8em', color: '#8a2be2', marginTop: '4px'}}>{task.category}</div>
+                {task.action_url && <div style={{fontSize: '0.7em', color: '#10b981', marginTop: '4px', wordBreak: 'break-all'}}>{task.action_url}</div>}
                 <p style={{fontSize: '0.9em', color: '#a1a1aa', marginTop: '8px'}}>{task.description}</p>
               </div>
             ))}
