@@ -1,6 +1,16 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './supabase'
 
+function ensureMetaTag(name, content) {
+  let tag = document.head.querySelector(`meta[name="${name}"]`)
+  if (!tag) {
+    tag = document.createElement('meta')
+    tag.setAttribute('name', name)
+    document.head.appendChild(tag)
+  }
+  tag.setAttribute('content', content)
+}
+
 export default function App() {
   const [session, setSession] = useState(null)
   const [email, setEmail] = useState('admin@resugrow.com')
@@ -31,6 +41,29 @@ export default function App() {
       fetchRedemptions()
     }
   }, [session])
+
+  useEffect(() => {
+    const titleMap = {
+      tasks: 'Tasks',
+      redemptions: 'Redemptions',
+      notifications: 'Broadcast'
+    }
+
+    if (!session) {
+      document.title = 'Chips Admin Login'
+      ensureMetaTag(
+        'description',
+        'Secure login for the Chips operations dashboard.'
+      )
+    } else {
+      const activeLabel = titleMap[activeTab] || 'Dashboard'
+      document.title = `Chips Admin | ${activeLabel}`
+      ensureMetaTag(
+        'description',
+        'Secure operations dashboard for Chips rewards, task management, redemptions, and user notifications.'
+      )
+    }
+  }, [activeTab, session])
 
   async function sendNotification(e) {
     e.preventDefault()
@@ -115,6 +148,7 @@ export default function App() {
               type="email" 
               placeholder="Email" 
               value={email} 
+              autoComplete="username"
               onChange={e => setEmail(e.target.value)} 
             />
             <input 
@@ -122,6 +156,7 @@ export default function App() {
               type="password" 
               placeholder="Password" 
               value={password} 
+              autoComplete="current-password"
               onChange={e => setPassword(e.target.value)} 
             />
             <button style={styles.button} type="submit" disabled={loading}>
